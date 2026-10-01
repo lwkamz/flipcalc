@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlipCalc — Reselling Profit Calculator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b0b0f;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        .logo span {
+            color: #7c5cff;
+        }
+
+        h1 {
+            font-size: clamp(38px, 7vw, 64px);
+            line-height: 1;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: #9999a6;
+            font-size: 16px;
+        }
+
+        .card {
+            background: #15151c;
+            border: 1px solid #292933;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cfcfd8;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #30303a;
+            background: #0e0e13;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #7c5cff;
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: #7c5cff;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .reset {
+            background: transparent;
+            border: 1px solid #30303a;
+            margin-top: 10px;
+        }
+
+        .results {
+            display: none;
+            margin-top: 25px;
+            gap: 12px;
+        }
+
+        .result {
+            background: #0e0e13;
+            border: 1px solid #292933;
+            border-radius: 14px;
+            padding: 18px;
+            text-align: center;
+        }
+
+        .result-title {
+            color: #9999a6;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .result-value {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .profit {
+            color: #5ee38b;
+        }
+
+        .error {
+            color: #ff6b6b;
+            text-align: center;
+            margin-top: 12px;
+            display: none;
+        }
+
+        @media (min-width: 550px) {
+            .results {
+                grid-template-columns: repeat(3, 1fr);
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="logo">Flip<span>Calc</span></div>
+
+        <h1>Know Your Profit<br>Before You Buy.</h1>
+
+        <p class="subtitle">
+            Calculate your potential reselling profit in seconds.
+        </p>
+    </div>
+
+    <div class="card">
+
+        <div class="input-group">
+            <label>Buy price (£)</label>
+            <input id="buyPrice" type="number" min="0" step="0.01" placeholder="e.g. 20">
+        </div>
+
+        <div class="input-group">
+            <label>Selling price (£)</label>
+            <input id="sellPrice" type="number" min="0" step="0.01" placeholder="e.g. 40">
+        </div>
+
+        <div class="input-group">
+            <label>Platform fees (£)</label>
+            <input id="fees" type="number" min="0" step="0.01" placeholder="e.g. 4">
+        </div>
+
+        <div class="input-group">
+            <label>Shipping / other costs (£)</label>
+            <input id="shipping" type="number" min="0" step="0.01" placeholder="e.g. 3">
+        </div>
+
+        <button onclick="calculateProfit()">
+            Calculate Profit
+        </button>
+
+        <button class="reset" onclick="resetCalculator()">
+            Reset
+        </button>
+
+        <p class="error" id="error">
+            Please enter a valid selling price.
+        </p>
+
+        <div class="results" id="results">
+
+            <div class="result">
+                <div class="result-title">Net Profit</div>
+                <div class="result-value profit" id="profit">£0.00</div>
+            </div>
+
+            <div class="result">
+                <div class="result-title">ROI</div>
+                <div class="result-value" id="roi">0%</div>
+            </div>
+
+            <div class="result">
+                <div class="result-title">Total Costs</div>
+                <div class="result-value" id="totalCosts">£0.00</div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+function calculateProfit() {
+
+    const buy = parseFloat(document.getElementById("buyPrice").value) || 0;
+    const sell = parseFloat(document.getElementById("sellPrice").value) || 0;
+    const fees = parseFloat(document.getElementById("fees").value) || 0;
+    const shipping = parseFloat(document.getElementById("shipping").value) || 0;
+
+    const error = document.getElementById("error");
+    const results = document.getElementById("results");
+
+    if (sell <= 0) {
+        error.style.display = "block";
+        results.style.display = "none";
+        return;
+    }
+
+    error.style.display = "none";
+
+    const totalCosts = buy + fees + shipping;
+    const profit = sell - totalCosts;
+
+    let roi = 0;
+
+    if (totalCosts > 0) {
+        roi = (profit / totalCosts) * 100;
+    }
+
+    document.getElementById("profit").textContent =
+        "£" + profit.toFixed(2);
+
+    document.getElementById("roi").textContent =
+        roi.toFixed(1) + "%";
+
+    document.getElementById("totalCosts").textContent =
+        "£" + totalCosts.toFixed(2);
+
+    results.style.display = "grid";
+}
+
+function resetCalculator() {
+
+    document.getElementById("buyPrice").value = "";
+    document.getElementById("sellPrice").value = "";
+    document.getElementById("fees").value = "";
+    document.getElementById("shipping").value = "";
+
+    document.getElementById("results").style.display = "none";
+    document.getElementById("error").style.display = "none";
+}
+</script>
+
+</body>
+</html>
