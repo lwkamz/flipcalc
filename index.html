@@ -1,250 +1,439 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlipCalc — Reselling Profit Calculator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+<title>FlipCalc — Reselling Profit Calculator</title>
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #0b0b0f;
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 25px;
-        }
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        .container {
-            width: 100%;
-            max-width: 650px;
-        }
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #08080c;
+    color: white;
+    min-height: 100vh;
+}
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+.navbar {
+    width: 100%;
+    padding: 22px 6%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #202027;
+}
 
-        .logo {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 25px;
-        }
+.logo {
+    font-size: 24px;
+    font-weight: 800;
+}
 
-        .logo span {
-            color: #7c5cff;
-        }
+.logo span {
+    color: #7c5cff;
+}
 
-        h1 {
-            font-size: clamp(38px, 7vw, 64px);
-            line-height: 1;
-            margin-bottom: 15px;
-        }
+.badge {
+    background: #17151f;
+    border: 1px solid #302a48;
+    color: #b8aaff;
+    padding: 8px 13px;
+    border-radius: 50px;
+    font-size: 12px;
+}
 
-        .subtitle {
-            color: #9999a6;
-            font-size: 16px;
-        }
+.hero {
+    text-align: center;
+    padding: 70px 20px 40px;
+}
 
-        .card {
-            background: #15151c;
-            border: 1px solid #292933;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-        }
+.hero h1 {
+    font-size: clamp(42px, 8vw, 78px);
+    line-height: 0.98;
+    letter-spacing: -3px;
+    max-width: 850px;
+    margin: auto;
+}
 
-        .input-group {
-            margin-bottom: 18px;
-        }
+.hero h1 span {
+    color: #8b72ff;
+}
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #cfcfd8;
-            font-size: 14px;
-        }
+.hero p {
+    max-width: 600px;
+    margin: 22px auto 0;
+    color: #92929e;
+    font-size: 18px;
+    line-height: 1.6;
+}
 
-        input {
-            width: 100%;
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid #30303a;
-            background: #0e0e13;
-            color: white;
-            font-size: 16px;
-            outline: none;
-        }
+.calculator {
+    width: min(720px, 92%);
+    margin: 30px auto 80px;
+    background: #111116;
+    border: 1px solid #27272f;
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 25px 80px rgba(0,0,0,.35);
+}
 
-        input:focus {
-            border-color: #7c5cff;
-        }
+.section-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 22px;
+}
 
-        button {
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 12px;
-            background: #7c5cff;
-            color: white;
-            font-size: 17px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 5px;
-        }
+.input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
 
-        button:hover {
-            opacity: 0.9;
-        }
+.input-group label {
+    display: block;
+    color: #b5b5c0;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
 
-        .reset {
-            background: transparent;
-            border: 1px solid #30303a;
-            margin-top: 10px;
-        }
+.input-wrapper {
+    position: relative;
+}
 
-        .results {
-            display: none;
-            margin-top: 25px;
-            gap: 12px;
-        }
+.currency {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #777783;
+}
 
-        .result {
-            background: #0e0e13;
-            border: 1px solid #292933;
-            border-radius: 14px;
-            padding: 18px;
-            text-align: center;
-        }
+input {
+    width: 100%;
+    background: #09090d;
+    border: 1px solid #2b2b34;
+    border-radius: 12px;
+    padding: 15px 15px 15px 35px;
+    color: white;
+    font-size: 16px;
+    outline: none;
+    transition: .2s;
+}
 
-        .result-title {
-            color: #9999a6;
-            font-size: 13px;
-            margin-bottom: 8px;
-        }
+input:focus {
+    border-color: #7c5cff;
+    box-shadow: 0 0 0 3px rgba(124,92,255,.12);
+}
 
-        .result-value {
-            font-size: 25px;
-            font-weight: bold;
-        }
+.calculate {
+    width: 100%;
+    margin-top: 24px;
+    padding: 17px;
+    border: none;
+    border-radius: 13px;
+    background: linear-gradient(135deg, #7c5cff, #9b72ff);
+    color: white;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s;
+}
 
-        .profit {
-            color: #5ee38b;
-        }
+.calculate:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(124,92,255,.25);
+}
 
-        .error {
-            color: #ff6b6b;
-            text-align: center;
-            margin-top: 12px;
-            display: none;
-        }
+.results {
+    display: none;
+    margin-top: 25px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
 
-        @media (min-width: 550px) {
-            .results {
-                grid-template-columns: repeat(3, 1fr);
-                display: none;
-            }
-        }
-    </style>
+.result {
+    background: #09090d;
+    border: 1px solid #292932;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.result-label {
+    color: #858590;
+    font-size: 12px;
+    margin-bottom: 9px;
+}
+
+.result-value {
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.profit {
+    color: #62e49a;
+}
+
+.loss {
+    color: #ff6b78;
+}
+
+.reset {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    background: transparent;
+    border: none;
+    color: #777783;
+    cursor: pointer;
+}
+
+.message {
+    display: none;
+    text-align: center;
+    margin-top: 15px;
+    color: #ff6b78;
+    font-size: 14px;
+}
+
+.features {
+    width: min(1000px, 92%);
+    margin: 0 auto 80px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.feature {
+    background: #111116;
+    border: 1px solid #24242c;
+    border-radius: 18px;
+    padding: 25px;
+}
+
+.feature-icon {
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+.feature h3 {
+    margin-bottom: 8px;
+}
+
+.feature p {
+    color: #858590;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+footer {
+    border-top: 1px solid #202027;
+    text-align: center;
+    padding: 30px;
+    color: #656570;
+    font-size: 13px;
+}
+
+@media (max-width: 650px) {
+
+    .navbar {
+        padding: 18px 5%;
+    }
+
+    .hero {
+        padding-top: 50px;
+    }
+
+    .hero h1 {
+        letter-spacing: -2px;
+    }
+
+    .hero p {
+        font-size: 15px;
+    }
+
+    .calculator {
+        padding: 20px;
+    }
+
+    .input-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .results {
+        grid-template-columns: 1fr;
+    }
+
+    .features {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 </head>
 
 <body>
 
-<div class="container">
+<nav class="navbar">
+    <div class="logo">Flip<span>Calc</span></div>
+    <div class="badge">FREE RESELLING TOOL</div>
+</nav>
 
-    <div class="header">
-        <div class="logo">Flip<span>Calc</span></div>
+<section class="hero">
 
-        <h1>Know Your Profit<br>Before You Buy.</h1>
+    <h1>
+        Know Your <span>Profit</span><br>
+        Before You Buy.
+    </h1>
 
-        <p class="subtitle">
-            Calculate your potential reselling profit in seconds.
-        </p>
+    <p>
+        Quickly calculate your potential profit, costs and return on investment before making a resale.
+    </p>
+
+</section>
+
+<section class="calculator">
+
+    <div class="section-title">
+        Calculate your flip
     </div>
 
-    <div class="card">
+    <div class="input-grid">
 
         <div class="input-group">
-            <label>Buy price (£)</label>
-            <input id="buyPrice" type="number" min="0" step="0.01" placeholder="e.g. 20">
-        </div>
+            <label>Buy price</label>
 
-        <div class="input-group">
-            <label>Selling price (£)</label>
-            <input id="sellPrice" type="number" min="0" step="0.01" placeholder="e.g. 40">
-        </div>
-
-        <div class="input-group">
-            <label>Platform fees (£)</label>
-            <input id="fees" type="number" min="0" step="0.01" placeholder="e.g. 4">
-        </div>
-
-        <div class="input-group">
-            <label>Shipping / other costs (£)</label>
-            <input id="shipping" type="number" min="0" step="0.01" placeholder="e.g. 3">
-        </div>
-
-        <button onclick="calculateProfit()">
-            Calculate Profit
-        </button>
-
-        <button class="reset" onclick="resetCalculator()">
-            Reset
-        </button>
-
-        <p class="error" id="error">
-            Please enter a valid selling price.
-        </p>
-
-        <div class="results" id="results">
-
-            <div class="result">
-                <div class="result-title">Net Profit</div>
-                <div class="result-value profit" id="profit">£0.00</div>
+            <div class="input-wrapper">
+                <span class="currency">£</span>
+                <input id="buy" type="number" min="0" step="0.01" placeholder="20.00">
             </div>
+        </div>
 
-            <div class="result">
-                <div class="result-title">ROI</div>
-                <div class="result-value" id="roi">0%</div>
+        <div class="input-group">
+            <label>Selling price</label>
+
+            <div class="input-wrapper">
+                <span class="currency">£</span>
+                <input id="sell" type="number" min="0" step="0.01" placeholder="40.00">
             </div>
+        </div>
 
-            <div class="result">
-                <div class="result-title">Total Costs</div>
-                <div class="result-value" id="totalCosts">£0.00</div>
+        <div class="input-group">
+            <label>Platform fees</label>
+
+            <div class="input-wrapper">
+                <span class="currency">£</span>
+                <input id="fees" type="number" min="0" step="0.01" placeholder="4.00">
             </div>
+        </div>
 
+        <div class="input-group">
+            <label>Shipping / other costs</label>
+
+            <div class="input-wrapper">
+                <span class="currency">£</span>
+                <input id="shipping" type="number" min="0" step="0.01" placeholder="3.00">
+            </div>
         </div>
 
     </div>
 
-</div>
+    <button class="calculate" onclick="calculate()">
+        Calculate My Profit →
+    </button>
+
+    <button class="reset" onclick="resetCalculator()">
+        Reset calculator
+    </button>
+
+    <div class="message" id="message">
+        Enter a valid selling price.
+    </div>
+
+    <div class="results" id="results">
+
+        <div class="result">
+            <div class="result-label">NET PROFIT</div>
+            <div class="result-value profit" id="profit">
+                £0.00
+            </div>
+        </div>
+
+        <div class="result">
+            <div class="result-label">ROI</div>
+            <div class="result-value" id="roi">
+                0%
+            </div>
+        </div>
+
+        <div class="result">
+            <div class="result-label">TOTAL COSTS</div>
+            <div class="result-value" id="costs">
+                £0.00
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<section class="features">
+
+    <div class="feature">
+        <div class="feature-icon">💰</div>
+        <h3>Know your profit</h3>
+        <p>
+            See exactly how much money you could make after your costs.
+        </p>
+    </div>
+
+    <div class="feature">
+        <div class="feature-icon">📊</div>
+        <h3>Track your ROI</h3>
+        <p>
+            Understand how efficiently your money could be used on each flip.
+        </p>
+    </div>
+
+    <div class="feature">
+        <div class="feature-icon">⚡</div>
+        <h3>Make decisions faster</h3>
+        <p>
+            Check a potential flip in seconds before committing your money.
+        </p>
+    </div>
+
+</section>
+
+<footer>
+    © 2026 FlipCalc. Built for resellers.
+</footer>
 
 <script>
-function calculateProfit() {
 
-    const buy = parseFloat(document.getElementById("buyPrice").value) || 0;
-    const sell = parseFloat(document.getElementById("sellPrice").value) || 0;
-    const fees = parseFloat(document.getElementById("fees").value) || 0;
-    const shipping = parseFloat(document.getElementById("shipping").value) || 0;
+function calculate() {
 
-    const error = document.getElementById("error");
+    const buy = Number(document.getElementById("buy").value) || 0;
+    const sell = Number(document.getElementById("sell").value) || 0;
+    const fees = Number(document.getElementById("fees").value) || 0;
+    const shipping = Number(document.getElementById("shipping").value) || 0;
+
+    const message = document.getElementById("message");
     const results = document.getElementById("results");
+    const profitElement = document.getElementById("profit");
 
     if (sell <= 0) {
-        error.style.display = "block";
+
+        message.style.display = "block";
         results.style.display = "none";
+
         return;
     }
 
-    error.style.display = "none";
+    message.style.display = "none";
 
     const totalCosts = buy + fees + shipping;
     const profit = sell - totalCosts;
@@ -261,22 +450,35 @@ function calculateProfit() {
     document.getElementById("roi").textContent =
         roi.toFixed(1) + "%";
 
-    document.getElementById("totalCosts").textContent =
+    document.getElementById("costs").textContent =
         "£" + totalCosts.toFixed(2);
+
+    if (profit < 0) {
+
+        profitElement.classList.remove("profit");
+        profitElement.classList.add("loss");
+
+    } else {
+
+        profitElement.classList.remove("loss");
+        profitElement.classList.add("profit");
+
+    }
 
     results.style.display = "grid";
 }
 
 function resetCalculator() {
 
-    document.getElementById("buyPrice").value = "";
-    document.getElementById("sellPrice").value = "";
+    document.getElementById("buy").value = "";
+    document.getElementById("sell").value = "";
     document.getElementById("fees").value = "";
     document.getElementById("shipping").value = "";
 
     document.getElementById("results").style.display = "none";
-    document.getElementById("error").style.display = "none";
+    document.getElementById("message").style.display = "none";
 }
+
 </script>
 
 </body>
